@@ -1,0 +1,28 @@
+<!--
+  Generated template for the ListLesturasPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>ListSuscriptor</ion-title>
+  </ion-navbar>
+  <button ion-button icon-only (click)="addLectura()">
+    <ion-icon name="add"></ion-icon>
+
+  </button>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-searchbar [(ngModel)]="searchfav" (ionInput)="getItems($event)"></ion-searchbar>
+  
+  <ion-list>
+    <button ion-item *ngFor="let item of lecturas" (click)="update(item)">
+      <h2>{{ item.fecha }} - {{ item.codigo }}</h2>
+      <p>{{ item.lectura }}</p>
+    </button>
+  </ion-list>
+  </ion-content>

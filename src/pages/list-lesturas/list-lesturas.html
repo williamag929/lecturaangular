@@ -4,25 +4,40 @@
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
+
 <ion-header>
 
-  <ion-navbar>
-    <ion-title>ListSuscriptor</ion-title>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Lecturas</ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only end (click)="addLectura()">
+        <ion-icon name="add"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
-  <button ion-button icon-only (click)="addLectura()">
-    <ion-icon name="add"></ion-icon>
-
-  </button>
 </ion-header>
-
 
 <ion-content padding>
   <ion-searchbar [(ngModel)]="searchfav" (ionInput)="getItems($event)"></ion-searchbar>
-  
+
+  <h2>Lista</h2>
   <ion-list>
-    <button ion-item *ngFor="let item of lecturas" (click)="update(item)">
-      <h2>{{ item.fecha }} - {{ item.codigo }}</h2>
-      <p>{{ item.lectura }}</p>
-    </button>
+    <ion-item-sliding *ngFor="let item of lecturas">
+      <ion-item >
+        <h2>{{ item.codigo }} - {{ item.fecha }}</h2>
+        <p>{{ item.lectura }}</p>
+      </ion-item>
+      <ion-item-options side="right">
+          <button ion-button color="info" icon-start (click)="updateLectura($event,item)">
+              Editar
+            </button>
+        <button ion-button color="danger" icon-start (click)="deleteLectura($event,item)">
+          Borrar
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
-  </ion-content>
+</ion-content>

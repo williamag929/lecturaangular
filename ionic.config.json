@@ -1,8 +1,12 @@
 {
-  "name": "lecturaAsuaq",
+  "name": "lecturaasuaq",
   "integrations": {
     "cordova": {}
   },
   "type": "ionic-angular",
-  "pro_id": "14b3b806"
+  "id": "14b3b806",
+  "proxies": [{
+    "path": "/api",
+    "proxyUrl": "http://18.221.179.176:3129"
+  }]
 }

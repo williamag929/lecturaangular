@@ -12,26 +12,36 @@
 
 </ion-header>
 
-
 <ion-content padding>
+
+  <h2>
+    {{lectura.codigo}} | {{suscriptor.descripcion}}
+  </h2>
+
   <ion-item>
     <ion-label floating>Codigo</ion-label>
-    <ion-input type="text"  [(ngModel)]="lectura.codigo"></ion-input>
+    <ion-input type="text" name="codigo" ng-init="lectura.codigo,0" [(ngModel)]="lectura.codigo"></ion-input>
   </ion-item>
 
   <ion-item>
     <ion-label floating>Fecha</ion-label>
-    <ion-input type="Date" [(ngModel)]="lectura.fecha"></ion-input>
+    <ion-datetime  displayFormat="MMM DD YYYY" name="fecha" [(ngModel)]="lectura.fecha"></ion-datetime>
   </ion-item>
 
 
   <ion-item>
-    <ion-label floating>Direccion</ion-label>
-    <ion-input type="text"  [(ngModel)]="lectura.observacion"></ion-input>
+    <ion-label floating>Lectura</ion-label>
+    <ion-input type="text" name="lectura" [(ngModel)]="lectura.lectura"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label floating>Observación</ion-label>
+    <ion-textarea placeholder="Observación" type="text" name="observacion" autocomplete="on" autocorrect="on" [(ngModel)]="lectura.observacion"></ion-textarea>
   </ion-item>
 
 
   <button ion-button block (click)="AddLectura(lectura)">Aceptar</button>
+
 
 
 </ion-content>

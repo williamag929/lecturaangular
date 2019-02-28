@@ -3,6 +3,7 @@ import { SuscriptorPage } from './../suscriptor/suscriptor';
 import { DbProvider } from './../../providers/db/db';
 import { Component } from '@angular/core';
 import {  NavController, NavParams } from 'ionic-angular';
+import { Platform, ActionSheetController } from 'ionic-angular';
 
 /**
  * Generated class for the ListSuscriptorPage page.
@@ -20,6 +21,9 @@ export class ListSuscriptorPage {
 
   suscriptores: any;
   suscriptoresRef: any;
+  actionsheetCtrl: any;
+  platform: any;
+  pedido: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private db: DbProvider) {
   }
@@ -29,11 +33,13 @@ export class ListSuscriptorPage {
   }
 
   ionViewDidEnter() {
+    //alert('ingreso');
+    
     this.db.getSuscriptores().then((res) => {
       this.suscriptores = [];
       for (var i = 0; i < res.rows.length; i++) {
         this.suscriptores.push({
-          id: res.rows.item(i).id,
+          suscriptorid: res.rows.item(i).suscriptorid,
           codigo: res.rows.item(i).codigo,
           descripcion: res.rows.item(i).descripcion,
           direccion: res.rows.item(i).direccion,
@@ -42,8 +48,9 @@ export class ListSuscriptorPage {
           lng: res.rows.item(i).lng,
           medidor: res.rows.item(i).medidor
         });
-      }
-    }, (err) => { /* alert('error al sacar de la bd'+err) */ })
+      };
+      this.suscriptoresRef= this.suscriptores;
+    }, (err) => {alert('error al sacar de la bd'+err)  })
   }
 
   addSuscriptor() {
@@ -53,15 +60,22 @@ export class ListSuscriptorPage {
   lecturaPush(event, item) {
     // That's right, we're pushing to ourselves!
     this.navCtrl.push(LecturasPage, {
-      suscriptorid: item.suscriptorid, codigo: item.codigo
+      suscriptorid: item.suscriptorid
     });
   }
 
   updateSuscriptor(event, item) {
     // That's right, we're pushing to ourselves!
+    console.log(item);
+    //alert(item.suscriptorid);
     this.navCtrl.push(SuscriptorPage, {
       item: item
     });
+  }
+
+  syncsuscriptor()
+  {
+    //this.sust.GetSuscriptores();
   }
 
   
@@ -72,7 +86,7 @@ export class ListSuscriptorPage {
     //lee el objeto y lo convierte a un array
     let fObj = val.split(" ");
 
-    //this.suscriptoresRef = this.suscriptores;
+    this.suscriptores = this.suscriptoresRef;
 
     //reinicia la busqueda
     //this.suscriptores = this.suscriptoresRef;
@@ -98,6 +112,38 @@ export class ListSuscriptorPage {
     });
   
   }
+
+
+
+  //menu emergente
+  openMenu() {
+    let actionSheet = this.actionsheetCtrl.create({
+      title: 'Opciones',
+      cssClass: 'action-sheets-basic-page',
+      buttons: [
+        {
+          text: 'Adicionar',
+          role: 'destructive',
+          icon: !this.platform.is('ios') ? 'new' : null,
+          handler: () => {
+            this.addSuscriptor();
+            console.log('Adicionar');
+          }
+        },
+        {
+          text: 'Sincronizar',
+          icon: !this.platform.is('ios') ? 'refresh' : null,
+          handler: () => {
+            this.syncsuscriptor();
+            console.log('Sync clicked');
+          }
+        }
+      ]
+    });
+    actionSheet.present();
+  }
+
+
 
 
 }

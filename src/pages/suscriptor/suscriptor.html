@@ -16,7 +16,8 @@
 <ion-content padding>
   <ion-item>
     <ion-label floating>Codigo</ion-label>
-    <ion-input type="text"  [(ngModel)]="suscriptor.codigo"></ion-input>
+    
+    <ion-input type="text" name="codigo" ng-init="suscriptor.codigo,0" [(ngModel)]="suscriptor.codigo"></ion-input>
   </ion-item>
 
   <ion-item>
@@ -40,7 +41,8 @@
     <ion-input type="text"  [(ngModel)]="suscriptor.medidor"></ion-input>
   </ion-item>
 
-  <button ion-button block (click)="AddSuscriptor(suscriptor)">Aceptar</button>
+
+  <button ion-button block (click)="SaveSuscriptor()">Aceptar</button>
 
 
 </ion-content>

@@ -1,6 +1,7 @@
+import { SuscriptorItem } from './../../models/suscriptor-item/suscriptor-item-iterface';
 import { LecturaItem } from './../../models/lectura-item/lectura-item-interface';
 import { Component } from '@angular/core';
-import {  NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams } from 'ionic-angular';
 import { DbProvider } from '../../providers/db/db';
 
 /**
@@ -17,11 +18,77 @@ import { DbProvider } from '../../providers/db/db';
 })
 export class LecturasPage {
 
-  lectura : LecturaItem;
+  lecturaitem = {};
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private db: DbProvider) {
+  lectura: { lecturaid : number;
+    codigo: string;
+    suscriptorid: string;
+    fecha : string;
+    lectura: number;
+    observacion : string;
+    lat : number;
+    lng : number;
+  }={
+    lecturaid: 0,
+    codigo: "",
+    suscriptorid: "",
+    fecha: new Date().toISOString().slice(0, 16),
+    lectura: 0,
+    observacion: "",
+    lat: 0,
+    lng: 0
+  };
+
+  suscriptor: {
+    suscriptorid: number;
+    codigo: string;
+    descripcion: string;
+    direccion: string;
+    estado: string;
+    lat: number;
+    lng: number;
+    medidor: string;
+  } =
+    { suscriptorid: 0, codigo: "", descripcion: "", direccion: "", estado: "", lng: 0, lat: 0, medidor: "" };
+
+
+  constructor(public navCtrl: NavController, public navParams: NavParams, public db: DbProvider) {
+
+    this.lecturaitem = this.navParams.get('item');
+
+    console.log(this.lecturaitem);
+
+    if (this.lecturaitem)
+    {
+      this.lectura = this.navParams.get('item');
+    }
+    else
+    {
+
     this.lectura.suscriptorid = navParams.get("suscriptorid");
-    this.lectura.codigo = navParams.get("codigo");
+    //this.lectura.codigo = navParams.get("codigo");
+    this.lectura.fecha = new Date().toISOString().slice(0, 16);
+    }
+
+    db.getSuscriptor(this.lectura.suscriptorid).then((res) => {
+      //alert('lectura');
+      for (var i = 0; i < res.rows.length; i++) {
+        this.suscriptor = ({
+          suscriptorid: res.rows.item(i).suscriptorid,
+          codigo: res.rows.item(i).codigo,
+          descripcion: res.rows.item(i).descripcion,
+          direccion: res.rows.item(i).direccion,
+          estado: res.rows.item(i).estado,
+          lat: res.rows.item(i).lat,
+          lng: res.rows.item(i).lng,
+          medidor: res.rows.item(i).medidor
+        });
+      }
+      this.lectura.codigo = this.suscriptor.codigo;
+    }, (err) => { alert('error al sacar de la bd' + err) })
+
+
+
 
   }
 
@@ -29,38 +96,32 @@ export class LecturasPage {
     console.log('ionViewDidLoad LecturasPage');
   }
 
-  
-  AddLectura(){
-    /*
-    let suscriptor = {
-      codigo: this.suscriptor.codigo,
-      descripcion : this.suscriptor.descripcion,
-      direccion : this.suscriptor.direccion,
-      estado: this.suscriptor.estado,
-      lng: this.suscriptor.lng ,
-      lat: this.suscriptor.lat,
-      medidor: this.suscriptor.medidor,
-    }*/
+  ionViewDidEnter() {
 
-    if(!this.lectura.lecturaid){
+    //try {
+    //  this.lectura = this.navParams.get('item');
+    //}
+    //catch{ }
 
-      console.log("adiciona");
 
-      this.db.updateLectura(this.lectura).then((res)=>{
-        this.navCtrl.pop;
-       /*  alert('se ha introducido correctamente en la bd'); */
-      },(err)=>{ /* alert('error al meter en la bd'+err) */ })
 
-    }
-    else
-    {
-      console.log("actualiza");
-      
-      this.db.addLectura(this.lectura).then((res)=>{
-      this.navCtrl.pop;
-     /*  alert('se ha introducido correctamente en la bd'); */
-    },(err)=>{ /* alert('error al meter en la bd'+err) */ })
   }
-}
+
+  AddLectura() {
+
+    if (this.lectura.lecturaid > 0) {
+      this.db.updateLectura(this.lectura).then((res) => {
+//        alert('actualizado');
+        this.navCtrl.pop();
+      }, (err) => { alert('error al actualizar' + err) })
+    }
+    else {
+      this.db.addLectura(this.lectura).then((res) => {
+//        alert('adicionado');
+        this.navCtrl.pop();
+      }, (err) => { alert('error al meter en la bd' + err) })
+    }
+
+  }
 
 }

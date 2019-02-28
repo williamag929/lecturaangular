@@ -4,7 +4,7 @@ export interface SuscriptorItem {
     descripcion : string;
     direccion: string;
     estado: string;
-    lat: string;
-    lng: string;
+    lat: number;
+    lng: number;
     medidor : string;
 }

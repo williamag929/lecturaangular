@@ -1,6 +1,6 @@
 import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, Toast } from 'ionic-angular';
+import { NavController, NavParams } from 'ionic-angular';
 import { DbProvider } from '../../providers/db/db';
 import { LecturasPage } from '../lecturas/lecturas';
 

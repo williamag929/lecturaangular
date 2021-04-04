@@ -1,5 +1,4 @@
 import { DbProvider } from './../../providers/db/db';
-import { SuscriptorItem } from './../../models/suscriptor-item/suscriptor-item-iterface';
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 

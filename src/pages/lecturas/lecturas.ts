@@ -1,5 +1,3 @@
-import { SuscriptorItem } from './../../models/suscriptor-item/suscriptor-item-iterface';
-import { LecturaItem } from './../../models/lectura-item/lectura-item-interface';
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { DbProvider } from '../../providers/db/db';

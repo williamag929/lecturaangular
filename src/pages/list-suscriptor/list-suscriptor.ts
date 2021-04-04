@@ -3,7 +3,6 @@ import { SuscriptorPage } from './../suscriptor/suscriptor';
 import { DbProvider } from './../../providers/db/db';
 import { Component } from '@angular/core';
 import {  NavController, NavParams } from 'ionic-angular';
-import { Platform, ActionSheetController } from 'ionic-angular';
 
 /**
  * Generated class for the ListSuscriptorPage page.

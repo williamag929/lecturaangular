@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { DbProvider } from '../../providers/db/db';
 import { SuscriptorServiceProvider } from '../../providers/suscriptor-service/suscriptor-service';
-import { File } from '@ionic-native/file';
+import { File } from '@ionic-native/file/ngx';
+
 
 
 
@@ -17,12 +18,13 @@ import { File } from '@ionic-native/file';
 @Component({
   selector: 'page-syncro',
   templateUrl: 'syncro.html',
-  providers: [SuscriptorServiceProvider]
+  providers:[SuscriptorServiceProvider]
 })
 export class SyncroPage {
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
-    private db: DbProvider, public suscserv: SuscriptorServiceProvider, private file: File) {
+    private suscserv: SuscriptorServiceProvider,
+    private db: DbProvider, private file: File) {
   }
   csvData: any[] = [];
   headerRow: any[] = [];
@@ -57,22 +59,37 @@ export class SyncroPage {
 
 
   readfile() {
-
-    this.suscserv.GetSuscriptores().subscribe(
-      data => {
-        this.suscriptores = data;
-        console.log(data);
-        alert(this.suscriptores.length);
-
-
-
-      },
+    this.suscserv.GetSuscriptores(this.file.externalRootDirectory + '/Download/suscriptores.txt').subscribe(
+      data => this.extractData(data),
       err => {
-        console.log(err);
-        alert(err);
-      },
-      () => console.log('Proceso Completo')
+        console.log('something went wrong: ',err);
+      }
     );
+
+    //let csv = this.papa.unparse({
+    //  fields: this.headerRow,
+    //  data: this.csvData
+    //});
+
+    this.csvData.forEach((row) => {
+      this.suscriptores.push({
+        codigo: row.item(0),
+        medidor:  row.item(1),
+        descripcion: row.item(2),
+        direccion: row.item(3),
+        estado: row.item(4)
+
+      });
+
+      row.item[0]
+
+    });
+
+
+  
+  }
+  extractData(data: any) {
+    throw new Error('Method not implemented.');
   }
 
 
@@ -82,7 +99,7 @@ export class SyncroPage {
     });
   }
 
-  
+
   BorrarLecturas() {
     this.db.deleteLecturas().then(res => {
       alert("Registros Borrados");
@@ -135,14 +152,13 @@ export class SyncroPage {
   }
 
 
-  GetJsonLecturas()
-  {
+  GetJsonLecturas() {
     var fileName: any = "lectura.json"
     var json: any = this.lecturas;
 
-    this.file.writeFile(this.file.externalRootDirectory + '/Download/', fileName, json, { replace: true })
-    .then(_ =>  alert('Success ;-)'))
-    .catch(err => alert('Failure'));
+     this.file.writeFile(this.file.externalRootDirectory + '/Download/', fileName, json, { replace: true })
+      .then(_ => alert('Success ;-)'))
+      .catch(err => alert('Failure'));
   }
 
 
@@ -157,7 +173,7 @@ export class SyncroPage {
         //alert(res.rows.item(i));
         this.lecturacsv.push({
           lecturaid: res.rows.item(i).lecturaid,
-          suscriptorid: res.rows.item(i).suscriptorid,
+          suscriptorid: res.rows.item(i).codigo,
           valor: res.rows.item(i).lectura
         });
       }
@@ -167,41 +183,38 @@ export class SyncroPage {
 
   }
 
-  GetCSVLecturas()
-  {
-    var csv: any = this.ConvertToCSV(this.lecturacsv)
-    var fileName: any = "lectura.csv"
-    this.file.writeFile(this.file.externalRootDirectory + '/Download/', fileName, csv)
-      .then(
-        _ => {
-          alert('Success ;-)')
-        }
-      )
-      .catch(
-        err => {
+  GetCSVLecturas() {
+    let csv: any = this.ConvertToCSV(this.lecturacsv)
+    let fileName: any = "lectura.txt"
+    // this.file.writeFile(this.file.externalRootDirectory + '/Download/', fileName, csv)
 
-          this.file.writeExistingFile(this.file.externalRootDirectory + '/Download/', fileName, csv)
-            .then(
-              _ => {
-                alert('Success ;-)')
-              }
-            )
-            .catch(
-              err => {
-                alert('Failure')
-              }
-            )
-        }
-      )
+    this.file.writeFile(this.file.externalRootDirectory + '/Download/', fileName, csv, { replace: true })
+    .then(
+      _ => {
+        alert('Success ;-)')
+      }
+    )
+    .catch(
+      err => {
+
+        alert('Failure')
+
+
+      }
+    )    
+
 
   }
 
 
+
+
+
   ConvertToCSV(objArray) {
-    let array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-    let str = '';
-    let row = "";
-    for (let index in objArray[0]) {
+      let array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+      let str = '';
+      let row = "";
+      for(let index in objArray[0]) {
       //Now convert each value to string and comma-separated
       row += index + ',';
     }

@@ -33,10 +33,10 @@ export class ListSuscriptorPage {
 
   ionViewDidEnter() {
     //alert('ingreso');
-    
+
     this.db.getSuscriptores().then((res) => {
       this.suscriptores = [];
-      for (var i = 0; i < res.rows.length; i++) {
+      for (let i = 0; i < res.rows.length; i++) {
         this.suscriptores.push({
           suscriptorid: res.rows.item(i).suscriptorid,
           codigo: res.rows.item(i).codigo,
@@ -77,7 +77,7 @@ export class ListSuscriptorPage {
     //this.sust.GetSuscriptores();
   }
 
-  
+
   //busqueda inteligente usando espacios
   getItems(ev: any) {
 
@@ -109,7 +109,7 @@ export class ListSuscriptorPage {
         return false;
       });
     });
-  
+
   }
 
 

@@ -70,7 +70,7 @@ export class LecturasPage {
 
     db.getSuscriptor(this.lectura.suscriptorid).then((res) => {
       //alert('lectura');
-      for (var i = 0; i < res.rows.length; i++) {
+      for (let i = 0; i < res.rows.length; i++) {
         this.suscriptor = ({
           suscriptorid: res.rows.item(i).suscriptorid,
           codigo: res.rows.item(i).codigo,

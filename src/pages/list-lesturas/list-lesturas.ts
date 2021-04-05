@@ -27,26 +27,26 @@ export class ListLesturasPage {
     console.log('ionViewDidLoad ListLesturasPage');
   }
 
-  //lecturaid, suscriptorid, codigo,fecha ,lectura ,observacion, lat , lng 
+  //lecturaid, suscriptorid, codigo,fecha ,lectura ,observacion, lat , lng
   ionViewDidEnter() {
     console.log("open lecturas");
     this.db.getLecturas().then((res) => {
       console.log("lectura recibida:"+res.rows.length);
       this.lecturas = [];
-      for (var i = 0; i < res.rows.length; i++) {
+      for (let i = 0; i < res.rows.length; i++) {
         console.log(res.rows.item(i));
         //alert(res.rows.item(i));
         this.lecturas.push({
           lecturaid: res.rows.item(i).lecturaid,
-          suscriptorid:  res.rows.item(i).suscriptorid, 
+          suscriptorid:  res.rows.item(i).suscriptorid,
           codigo: res.rows.item(i).codigo,
           fecha: res.rows.item(i).fecha,
-          lectura: res.rows.item(i).lectura 
+          lectura: res.rows.item(i).lectura
         });
       }
       this.lecturasRef = this.lecturas;
     }, (err) => {  alert('error al sacar de la bd'+err)  })
-   
+
   }
 
   addLectura() {
@@ -67,16 +67,16 @@ export class ListLesturasPage {
     // That's right, we're pushing to ourselves!
     this.db.deleteLectura(item).then((res) => {
 
-      
+
       let index: number = this.lecturas.indexOf(item); // <-- todo?
       if(index > -1){
           this.lecturas.splice(index, 1);
       }
-      
+
       //alert('Registro Borrado');
     }, (err) => { alert('error al actualizar' + err) })
   }
-   
+
   //busqueda inteligente usando espacios
   getItems(ev: any) {
 
@@ -108,7 +108,7 @@ export class ListLesturasPage {
         return false;
       });
     });
-  
+
   }
 
 

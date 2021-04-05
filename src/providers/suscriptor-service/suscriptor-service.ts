@@ -41,7 +41,7 @@ export class SuscriptorServiceProvider {
 
     data: any;
 
-  
+
     GetSuscriptores(url) {
       return this.http
         .get(url, {
@@ -49,8 +49,8 @@ export class SuscriptorServiceProvider {
         });
     }
 
-    
-     // var url = 'http://18.221.179.176:3129/api/' + 'suscriptor/';
+
+     // let url = 'http://18.221.179.176:3129/api/' + 'suscriptor/';
      // this.http.get(url).map((res: Response) => res.json())
      // .subscribe( res => this.suscriptores = res, error => this.error = error);
 
@@ -67,8 +67,8 @@ export class SuscriptorServiceProvider {
       //return this.suscriptores;
     //}
 
-  
-  
+
+
 
 
 

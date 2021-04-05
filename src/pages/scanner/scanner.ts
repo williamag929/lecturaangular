@@ -49,7 +49,7 @@ export class ScannerPage {
 
     this.db.getSuscriptores().then((res) => {
       this.suscriptores = [];
-      for (var i = 0; i < res.rows.length; i++) {
+      for (let i = 0; i < res.rows.length; i++) {
         this.suscriptores.push({
           suscriptorid: res.rows.item(i).suscriptorid,
           codigo: res.rows.item(i).codigo,

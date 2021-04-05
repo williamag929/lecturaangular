@@ -86,7 +86,7 @@ export class SyncroPage {
     });
 
 
-  
+
   }
   extractData(data: any) {
     throw new Error('Method not implemented.');
@@ -131,7 +131,7 @@ export class SyncroPage {
     this.db.getLecturas().then((res) => {
       console.log("lectura recibida:" + res.rows.length);
       this.lecturas = [];
-      for (var i = 0; i < res.rows.length; i++) {
+      for (let i = 0; i < res.rows.length; i++) {
         console.log(res.rows.item(i));
         //alert(res.rows.item(i));
         this.lecturas.push({
@@ -153,8 +153,8 @@ export class SyncroPage {
 
 
   GetJsonLecturas() {
-    var fileName: any = "lectura.json"
-    var json: any = this.lecturas;
+    let fileName: any = "lectura.json"
+    let json: any = this.lecturas;
 
      this.file.writeFile(this.file.externalRootDirectory + '/Download/', fileName, json, { replace: true })
       .then(_ => alert('Success ;-)'))
@@ -168,7 +168,7 @@ export class SyncroPage {
     this.db.getLecturas().then((res) => {
       console.log("lectura recibida:" + res.rows.length);
       this.lecturacsv = [];
-      for (var i = 0; i < res.rows.length; i++) {
+      for (let i = 0; i < res.rows.length; i++) {
         console.log(res.rows.item(i));
         //alert(res.rows.item(i));
         this.lecturacsv.push({
@@ -201,7 +201,7 @@ export class SyncroPage {
 
 
       }
-    )    
+    )
 
 
   }

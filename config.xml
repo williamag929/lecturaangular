@@ -3,7 +3,7 @@
     <name>lecturaasuaq</name>
     <description>Lectura Asuaq</description>
     <author email="williamag929@gmail.com" href="http://serpisoluciones.com/">Serpi Soluciones</author>
-    <content src="index.html" />
+    <content original-src="index.html" src="http://localhost:8100" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
@@ -94,4 +94,5 @@
     <plugin name="cordova-plugin-file" spec="^6.0.1" />
     <engine name="android" spec="7.0.0" />
     <engine name="ios" spec="4.5.5" />
+    <allow-navigation href="http://localhost:8100" sessionid="9f664e2b" />
 </widget>

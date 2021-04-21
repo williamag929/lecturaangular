@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { DbProvider } from '../../providers/db/db';
 import { SuscriptorServiceProvider } from '../../providers/suscriptor-service/suscriptor-service';
-import { File } from '@ionic-native/file/ngx';
+import { File } from '@ionic-native/file';
+import { JsonPipe } from '@angular/common';
 
 
 
@@ -22,14 +23,16 @@ import { File } from '@ionic-native/file/ngx';
 })
 export class SyncroPage {
 
+  private promise: Promise<string>;
+
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private suscserv: SuscriptorServiceProvider,
-    private db: DbProvider, private file: File) {
+    private db: DbProvider, public file: File) {
   }
   csvData: any[] = [];
   headerRow: any[] = [];
 
-  suscriptores: any;
+  suscriptores: any[] = [];
 
   suscriptoritem = {};
 
@@ -51,45 +54,93 @@ export class SyncroPage {
 
 
 
-  //fileTransfer: FileTransferObject = this.transfer.create();
-
   ionViewDidLoad() {
     console.log('ionViewDidLoad SyncroPage');
   }
 
 
+
+  async readFile() {
+
+    let directory = this.file.externalRootDirectory + '/Download/';
+    let filename = 'suscriptores.txt'
+
+    this.promise = this.file.readAsText(directory, filename);
+    await this.promise.then(value => {
+    console.log(value);
+
+    this.extractData(value);
+
+    });
+    }
+
+
   readfile() {
-    this.suscserv.GetSuscriptores(this.file.externalRootDirectory + '/Download/suscriptores.txt').subscribe(
-      data => this.extractData(data),
-      err => {
-        console.log('something went wrong: ',err);
-      }
-    );
+
+    //let directory = this.file.externalRootDirectory + '/Download/';
+    //let file = 'suscriptores.txt'
+
+
+    //this.suscserv.GetSuscriptores(directory + file).subscribe(
+    //  data => this.extractData(data),
+    //  err => {
+    //    console.log('something went wrong: ',err);
+    //  }
+    //);
 
     //let csv = this.papa.unparse({
     //  fields: this.headerRow,
     //  data: this.csvData
     //});
 
-    this.csvData.forEach((row) => {
-      this.suscriptores.push({
-        codigo: row.item(0),
-        medidor:  row.item(1),
-        descripcion: row.item(2),
-        direccion: row.item(3),
-        estado: row.item(4)
+    this.readFile();
 
-      });
-
-      row.item[0]
-
-    });
+  
 
 
 
   }
-  extractData(data: any) {
-    throw new Error('Method not implemented.');
+  extractData(data) {
+
+    let lines = [];
+    let allTextLines = data.split(/\r|\n|\r/);
+
+    let firstrow = 'codigo;medidor;descripcion;direccion;estado;'
+
+    let headers = firstrow.split(';');
+
+    for (let i = 0; i < allTextLines.length; i++) {
+      // split content based on comma
+      let data = allTextLines[i].split(';');
+      if (data.length === headers.length) {
+        let tarr = [];
+        for (let j = 0; j < headers.length; j++) {
+          tarr.push(data[j]);
+        }
+  
+       // log each row to see output 
+       console.log(tarr);
+       lines.push(tarr);
+    }
+   }
+   // all rows in the csv file 
+   console.log(">>>>>>>>>>>>>>>>>", lines);
+
+
+   lines.map((r) => {
+    this.suscriptores.push({
+      codigo: r[0],
+      medidor:  r[1],
+      descripcion: r[2],
+      direccion: r[3],
+      estado: r[4]
+
+    });
+    //row.item[0]
+  });
+  console.log(">>>>>>>>>>>>>>>>>", this.suscriptores);
+  
+    //throw new Error('Method not implemented.');
   }
 
 
@@ -109,8 +160,8 @@ export class SyncroPage {
   GuardarSusc() {
 
 
-    this.db.deleteSuscriptores().then(res => {
-      alert("Registros Borrados");
+    //this.db.deleteSuscriptores().then(res => {
+    //  alert("Registros Borrados");
 
 
       this.suscriptores.forEach(element => {
@@ -121,7 +172,7 @@ export class SyncroPage {
         }, (err) => { console.log('error al insertar en la bd' + err) })
       });
 
-    });
+    
   }
 
 
@@ -142,7 +193,7 @@ export class SyncroPage {
           lectura: res.rows.item(i).lectura
         });
       }
-      this.GetJsonLecturas();
+      this.writeJsonLecturas();
     }, (err) => { alert('error al sacar de la bd' + err) })
 
 
@@ -152,13 +203,13 @@ export class SyncroPage {
   }
 
 
-  GetJsonLecturas() {
+  writeJsonLecturas() {
     let fileName: any = "lectura.json"
     let json: any = this.lecturas;
 
-     this.file.writeFile(this.file.externalRootDirectory + '/Download/', fileName, json, { replace: true })
-      .then(_ => alert('Success ;-)'))
-      .catch(err => alert('Failure'));
+    this.file.createFile(this.file.dataDirectory, fileName, true);
+
+    this.file.writeFile(this.file.dataDirectory, fileName, json, { replace: true,append: false });
   }
 
 
@@ -173,35 +224,26 @@ export class SyncroPage {
         //alert(res.rows.item(i));
         this.lecturacsv.push({
           lecturaid: res.rows.item(i).lecturaid,
-          suscriptorid: res.rows.item(i).codigo,
+          codigo: res.rows.item(i).codigo,
           valor: res.rows.item(i).lectura
         });
       }
-      this.GetCSVLecturas();
+      this.writeCSVLecturas();
     }, (err) => { alert('error al sacar de la bd' + err) })
 
 
   }
 
-  GetCSVLecturas() {
+  writeCSVLecturas() {
     let csv: any = this.ConvertToCSV(this.lecturacsv)
     let fileName: any = "lectura.txt"
     // this.file.writeFile(this.file.externalRootDirectory + '/Download/', fileName, csv)
 
-    this.file.writeFile(this.file.externalRootDirectory + '/Download/', fileName, csv, { replace: true })
-    .then(
-      _ => {
-        alert('Success ;-)')
-      }
-    )
-    .catch(
-      err => {
+    //this.file.writeFile(this.file.externalRootDirectory + '/Download/', fileName, csv, { replace: true });
 
-        alert('Failure')
+    this.file.createFile(this.file.externalRootDirectory + '/Download/', fileName, true);
 
-
-      }
-    )
+    this.file.writeFile(this.file.externalRootDirectory + '/Download/', fileName, csv, { replace: true,append: false });
 
 
   }

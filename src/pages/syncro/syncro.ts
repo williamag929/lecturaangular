@@ -19,7 +19,7 @@ import { JsonPipe } from '@angular/common';
 @Component({
   selector: 'page-syncro',
   templateUrl: 'syncro.html',
-  providers:[SuscriptorServiceProvider]
+  providers: [SuscriptorServiceProvider]
 })
 export class SyncroPage {
 
@@ -67,39 +67,19 @@ export class SyncroPage {
 
     this.promise = this.file.readAsText(directory, filename);
     await this.promise.then(value => {
-    console.log(value);
+      console.log(value);
 
-    this.extractData(value);
+      this.extractData(value);
 
     });
-    }
-
-
-  readfile() {
-
-    //let directory = this.file.externalRootDirectory + '/Download/';
-    //let file = 'suscriptores.txt'
-
-
-    //this.suscserv.GetSuscriptores(directory + file).subscribe(
-    //  data => this.extractData(data),
-    //  err => {
-    //    console.log('something went wrong: ',err);
-    //  }
-    //);
-
-    //let csv = this.papa.unparse({
-    //  fields: this.headerRow,
-    //  data: this.csvData
-    //});
-
-    this.readFile();
-
-  
-
-
-
   }
+
+
+  readSusc() {
+    this.readFile();
+  }
+
+
   extractData(data) {
 
     let lines = [];
@@ -117,62 +97,70 @@ export class SyncroPage {
         for (let j = 0; j < headers.length; j++) {
           tarr.push(data[j]);
         }
-  
-       // log each row to see output 
-       console.log(tarr);
-       lines.push(tarr);
+
+        // log each row to see output 
+        console.log(tarr);
+        lines.push(tarr);
+      }
     }
-   }
-   // all rows in the csv file 
-   console.log(">>>>>>>>>>>>>>>>>", lines);
+    // all rows in the csv file 
+    console.log(">>>>>>>>>>>>>>>>>", lines);
 
 
-   lines.map((r) => {
-    this.suscriptores.push({
-      codigo: r[0],
-      medidor:  r[1],
-      descripcion: r[2],
-      direccion: r[3],
-      estado: r[4]
+    lines.map((r) => {
+      this.suscriptores.push({
+        codigo: r[0],
+        medidor: r[1],
+        descripcion: r[2],
+        direccion: r[3],
+        estado: r[4]
 
+      });
+      //row.item[0]
     });
-    //row.item[0]
-  });
-  console.log(">>>>>>>>>>>>>>>>>", this.suscriptores);
-  
+    console.log(">>>>>>>>>>>>>>>>>", this.suscriptores);
+
+    alert('Archivo txt cargado');
     //throw new Error('Method not implemented.');
   }
 
 
-  BorrarSusc() {
-    this.db.deleteSuscriptores().then(res => {
-      alert("Registros Borrados");
-    });
+  borrarSusc() {
+    this.db.deleteSuscriptores();
+    alert('Registros borrados');
+
   }
 
 
-  BorrarLecturas() {
-    this.db.deleteLecturas().then(res => {
-      alert("Registros Borrados");
-    });
+  borrarLecturas() {
+    this.db.deleteLecturas();
+    alert('Registros borrados');
   }
 
-  GuardarSusc() {
+
+  guardarSusc()
+  {
+    this.addSuscriptores().then(res => {
+      alert('Registros insertados');
+    });
+
+  }
+
+  async addSuscriptores() {
 
 
     //this.db.deleteSuscriptores().then(res => {
     //  alert("Registros Borrados");
+    this.suscriptores.map(element => {
+      ///       console.log("suscriptor",element);
+      //this.suscriptor = element;
+      this.db.addSuscriptor(element).then((res) => {
+        //console.log('adicionado');
+      }, (err) => { console.log('error al insertar en la bd' + err) })
+    });
 
+    return true;
 
-      this.suscriptores.forEach(element => {
-        ///       console.log("suscriptor",element);
-        //this.suscriptor = element;
-        this.db.addSuscriptor(element).then((res) => {
-          console.log('adicionado');
-        }, (err) => { console.log('error al insertar en la bd' + err) })
-      });
-
-    
   }
 
 
@@ -209,7 +197,7 @@ export class SyncroPage {
 
     this.file.createFile(this.file.dataDirectory, fileName, true);
 
-    this.file.writeFile(this.file.dataDirectory, fileName, json, { replace: true,append: false });
+    this.file.writeFile(this.file.dataDirectory, fileName, json, { replace: true, append: false });
   }
 
 
@@ -229,6 +217,9 @@ export class SyncroPage {
         });
       }
       this.writeCSVLecturas();
+
+      alert('Archivo creado');
+
     }, (err) => { alert('error al sacar de la bd' + err) })
 
 
@@ -243,7 +234,7 @@ export class SyncroPage {
 
     this.file.createFile(this.file.externalRootDirectory + '/Download/', fileName, true);
 
-    this.file.writeFile(this.file.externalRootDirectory + '/Download/', fileName, csv, { replace: true,append: false });
+    this.file.writeFile(this.file.externalRootDirectory + '/Download/', fileName, csv, { replace: true, append: false });
 
 
   }
@@ -253,10 +244,10 @@ export class SyncroPage {
 
 
   ConvertToCSV(objArray) {
-      let array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-      let str = '';
-      let row = "";
-      for(let index in objArray[0]) {
+    let array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+    let str = '';
+    let row = "";
+    for (let index in objArray[0]) {
       //Now convert each value to string and comma-separated
       row += index + ',';
     }

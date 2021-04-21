@@ -19,11 +19,11 @@
 <ion-content padding>
 
   <div class="bar bar-balanced">
-    <button ion-button block (click)="readfile($event)">Leer Suscriptores</button>
+    <button ion-button block (click)="readSusc($event)">Leer Suscriptores</button>
   </div>
 
   <div class="bar bar-balanced">
-    <button ion-button block (click)="GuardarSusc($event)">Guardar Suscriptores</button>
+    <button ion-button block (click)="guardarSusc($event)">Guardar Suscriptores</button>
   </div>
 
   <div class="bar bar-balanced">
@@ -31,22 +31,22 @@
   </div>
 
   <div class="bar bar-balanced">
-      <button ion-button block (click)="BorrarLecturas($event)">Borrar Lecturas</button>
-    </div>
+    <button ion-button block (click)="borrarLecturas($event)">Borrar Lecturas</button>
+  </div>
 
-    <div class="bar bar-balanced">
-      <button ion-button block (click)="BorrarSusc($event)">Borrar Suscriptores</button>
-    </div>    
+  <div class="bar bar-balanced">
+    <button ion-button block (click)="borrarSusc($event)">Borrar Suscriptores</button>
+  </div>
 
 
-    <ion-list>
-      <ion-item-sliding *ngFor="let item of (suscriptores ? suscriptores.slice(0,100) : [])">
-        <ion-item>
-          <h2>{{ item.medidor }} - {{ item.direccion }}</h2>
-          <p>{{ item.descripcion }} {{item.codigo}}</p>
-        </ion-item>
-      </ion-item-sliding>
-    </ion-list>
+  <ion-list>
+    <ion-item-sliding *ngFor="let item of (suscriptores ? suscriptores.slice(0,100) : [])">
+      <ion-item>
+        <h2>{{ item.medidor }} - {{ item.direccion }}</h2>
+        <p>{{ item.descripcion }} {{item.codigo}}</p>
+      </ion-item>
+    </ion-item-sliding>
+  </ion-list>
 
 
 </ion-content>
